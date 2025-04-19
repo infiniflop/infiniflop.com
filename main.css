@@ -34,6 +34,81 @@ body, html {
     text-align: center;
 }
 
+h1 {
+    font-size: 3rem;
+    letter-spacing: 2px;
+    margin: 0 0 0.5rem 0;
+}
+
+.brand {
+    font-size: 2rem;
+    margin: 0 0 1.2rem 0;
+    font-weight: 600;
+}
+
+.tagline {
+    font-size: 1.1rem;
+    font-weight: 300;
+    margin: 0.5rem auto 2rem auto; /* center horizontally */
+    max-width: 600px;
+    text-align: center;
+}
+
+.features ul {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 2rem;
+}
+
+.features li {
+    margin: 0.6rem 0;
+    position: relative;
+    padding-left: 1.4rem;
+    font-size: 1rem;
+}
+
+.features li::before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    color: #41ffba;
+}
+
+.cta {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.cta input[type="email"] {
+    padding: 0.6rem 1rem;
+    border: none;
+    border-radius: 4px;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.95rem;
+}
+
+.cta button {
+    padding: 0.6rem 1.2rem;
+    background-color: #41ffba;
+    border: none;
+    border-radius: 4px;
+    font-size: 0.95rem;
+    font-family: "JetBrains Mono", monospace;
+    cursor: pointer;
+    transition: background 0.2s; 
+}
+
+.cta button:hover {
+    background-color: #25c48f;
+}
+
+.coming-soon {
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+    font-style: italic;
+}
+
 hr {
     margin: auto;
     width: 40%;
