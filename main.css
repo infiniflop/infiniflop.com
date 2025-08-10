@@ -229,7 +229,66 @@ h1 {
     to { opacity: 1; }
 }
 
+/* Code styling */
+code {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 0.2rem 0.4rem;
+    border-radius: 4px;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.9em;
+    color: #a78bfa;
+    white-space: nowrap;
+}
+
 /* Responsive design */
+@media (max-width: 480px) {
+    .middle {
+        padding: 1rem;
+        max-width: 95vw;
+    }
+    
+    .features li {
+        padding: 1rem;
+        padding-left: 2.5rem;
+        font-size: 0.9rem;
+    }
+    
+    .features li::before {
+        left: 1rem;
+        top: 1rem;
+        width: 10px;
+        height: 10px;
+    }
+    
+    .bottomleft {
+        bottom: 1rem;
+        left: 1rem;
+        font-size: 0.7rem;
+    }
+    
+    code {
+        white-space: normal;
+        word-break: break-all;
+    }
+}
+
+@media (min-width: 481px) and (max-width: 767px) {
+    .middle {
+        padding: 1.5rem;
+    }
+    
+    .features li {
+        padding: 1.25rem;
+        padding-left: 2.75rem;
+        font-size: 0.95rem;
+    }
+    
+    .bottomleft {
+        bottom: 1.5rem;
+        left: 1.5rem;
+    }
+}
+
 @media (min-width: 768px) {
     .features ul {
         grid-template-columns: 1fr;
