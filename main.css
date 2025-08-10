@@ -8,6 +8,7 @@ body, html {
     height: 100%;
     font-family: "JetBrains Mono", monospace;
     overflow-x: hidden;
+    background-color: #0a0a0b;
 }
 
 .bgimg {
