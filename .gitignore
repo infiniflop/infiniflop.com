@@ -23,6 +23,12 @@
 # misc
 .DS_Store
 *.pem
+__pycache__
+.idea
+CLAUDE.md
+AGENTS.md
+instructions.md
+CODEX.md
 
 # debug
 npm-debug.log*
