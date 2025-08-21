@@ -36,7 +36,7 @@ const FloatingOrbs: React.FC = () => {
         left: `${Math.round(Math.random() * 90)}%`,
         delay: Math.random() * 3,
       })),
-    [isClient]
+    []
   );
 
   React.useEffect(() => {
@@ -87,7 +87,7 @@ const Noise: React.FC = () => (
 const fadeUp = (i = 0) => ({
   initial: { opacity: 0, y: 16 },
   animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.5, delay: 0.15 * i, ease: [0.22, 1, 0.36, 1] },
+  transition: { duration: 0.5, delay: 0.15 * i, ease: [0.22, 1, 0.36, 1] as const },
 });
 
 // Subtle "active" bullet dot used in the 3 feature items (centered vertically)
