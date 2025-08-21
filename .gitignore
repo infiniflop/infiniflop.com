@@ -24,7 +24,12 @@
 .DS_Store
 *.pem
 __pycache__
-.idea
+.idea/
+.vscode
+*.log
+.cache
+.temp
+.tmp
 CLAUDE.md
 AGENTS.md
 instructions.md
