@@ -9,32 +9,32 @@ import { motion } from "framer-motion";
 // while keeping the page content IDENTICAL to the attached HTML.
 // ---------------------------------------------
 
-// Small design tokens (copied from your theme)
+// Small design tokens (refined for professional look)
 const gradient =
-  "bg-[radial-gradient(1000px_600px_at_120%_-10%,rgb(56_189_248_/_0.45)_0%,transparent_60%),radial-gradient(800px_500px_at_-10%_-10%,rgb(168_85_247_/_0.35)_0%,transparent_50%),radial-gradient(700px_400px_at_50%_120%,rgb(20_184_166_/_0.35)_0%,transparent_55%)]";
+  "bg-[radial-gradient(1200px_800px_at_50%_-20%,rgb(59_130_246_/_0.12)_0%,transparent_70%)]";
 
 const glass =
-  "backdrop-blur-xl border border-white/10 bg-white/5 dark:bg-white/5 shadow-[0_0_0_1px_rgba(255,255,255,0.06)_inset,0_10px_40px_-10px_rgba(0,0,0,0.4)]";
+  "backdrop-blur-lg border border-white/[0.08] bg-white/[0.03] dark:bg-white/[0.03] shadow-[0_0_0_1px_rgba(255,255,255,0.03)_inset,0_8px_32px_-8px_rgba(0,0,0,0.3)]";
 
 const shineClass =
-  "relative overflow-hidden before:absolute before:inset-0 before:-translate-x-full before:bg-gradient-to-r before:from-transparent before:via-white/30 before:to-transparent hover:before:translate-x-full before:transition before:duration-[1200ms] before:ease-out";
+  "relative overflow-hidden before:absolute before:inset-0 before:-translate-x-full before:bg-gradient-to-r before:from-transparent before:via-white/15 before:to-transparent hover:before:translate-x-full before:transition before:duration-[1400ms] before:ease-out";
 
 // Simple utility
 const cn = (...classes: (string | false | null | undefined)[]) =>
   classes.filter(Boolean).join(" ");
 
-// Floating orbs background (from your theme)
+// Floating orbs background (refined for subtle professional look)
 const FloatingOrbs: React.FC = () => {
   const [isClient, setIsClient] = React.useState(false);
-  
+
   const orbs = React.useMemo(
     () =>
-      new Array(6).fill(0).map((_, i) => ({
+      new Array(3).fill(0).map((_, i) => ({
         id: i,
-        size: 160 + Math.round(Math.random() * 140),
+        size: 200 + Math.round(Math.random() * 180),
         top: `${Math.round(Math.random() * 80)}%`,
         left: `${Math.round(Math.random() * 90)}%`,
-        delay: Math.random() * 3,
+        delay: Math.random() * 2,
       })),
     []
   );
@@ -53,17 +53,15 @@ const FloatingOrbs: React.FC = () => {
         <motion.div
           key={o.id}
           initial={{ opacity: 0 }}
-          animate={{ opacity: 0.55 }}
-          transition={{ duration: 1.2, delay: o.delay }}
+          animate={{ opacity: 0.25 }}
+          transition={{ duration: 1.5, delay: o.delay }}
           className="absolute rounded-full blur-3xl"
           style={{
             width: o.size,
             height: o.size,
             top: o.top,
             left: o.left,
-            background:
-              "radial-gradient(circle at 30% 30%, rgba(34,211,238,.5), transparent 60%), radial-gradient(circle at 70% 70%, rgba(168,85,247,.45), transparent 60%)",
-            filter: "saturate(140%)",
+            background: "radial-gradient(circle at 30% 30%, rgba(59,130,246,0.25), transparent 65%)",
           }}
         />
       ))}
@@ -93,13 +91,13 @@ const fadeUp = (i = 0) => ({
 // Subtle "active" bullet dot used in the 3 feature items (centered vertically)
 const BulletDot: React.FC = () => (
   <motion.span
-    initial={{ scale: 1, opacity: 0.95 }}
-    animate={{ scale: [1, 1.06, 1], opacity: [0.95, 1, 0.95] }}
-    transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }}
+    initial={{ scale: 1, opacity: 0.9 }}
+    animate={{ scale: [1, 1.04, 1], opacity: [0.9, 1, 0.9] }}
+    transition={{ duration: 2.8, repeat: Infinity, ease: "easeInOut" }}
     className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 inline-flex h-3 w-3 items-center justify-center"
   >
-    <span className="relative block h-3 w-3 rounded-full bg-gradient-to-br from-emerald-400 to-cyan-400 ring-2 ring-emerald-300/20 shadow-[0_0_8px_rgba(16,185,129,0.55),0_0_18px_rgba(34,211,238,0.35)]">
-      <span className="pointer-events-none absolute -inset-1 rounded-full bg-emerald-400/10 blur-[6px]" aria-hidden="true" />
+    <span className="relative block h-2.5 w-2.5 rounded-full bg-blue-500 ring-1 ring-blue-400/30 shadow-[0_0_6px_rgba(59,130,246,0.35)]">
+      <span className="pointer-events-none absolute -inset-1 rounded-full bg-blue-400/8 blur-[4px]" aria-hidden="true" />
     </span>
   </motion.span>
 );
@@ -127,17 +125,17 @@ const ComingSoon: React.FC = () => {
             {/* EXACT TEXT CONTENT START */}
             <motion.h1
               {...fadeUp(0.1)}
-              className="text-3xl sm:text-4xl md:text-6xl font-black tracking-[0.1em] bg-gradient-to-r from-white via-fuchsia-300 to-cyan-300 bg-clip-text text-transparent drop-shadow-[0_0_30px_rgba(167,139,250,0.30)]"
+              className="text-3xl sm:text-4xl md:text-6xl font-black tracking-[0.1em] text-white/95"
             >
               COMING SOON
             </motion.h1>
 
             <motion.h2
               {...fadeUp(0.2)}
-              className="mt-3 text-2xl sm:text-3xl md:text-5xl font-extrabold bg-gradient-to-r from-cyan-400 via-fuchsia-400 to-emerald-400 bg-clip-text text-transparent relative inline-block"
+              className="mt-3 text-2xl sm:text-3xl md:text-5xl font-extrabold bg-gradient-to-r from-blue-400 to-blue-500 bg-clip-text text-transparent relative inline-block"
             >
               INFINIFLOP
-              <span className="block mx-auto mt-2 h-[2px] w-4/5 sm:w-3/5 bg-gradient-to-r from-transparent via-fuchsia-400 to-transparent" />
+              <span className="block mx-auto mt-2 h-[1.5px] w-4/5 sm:w-3/5 bg-blue-400/40" />
             </motion.h2>
 
             <motion.p
@@ -158,7 +156,7 @@ const ComingSoon: React.FC = () => {
                   <>
                     Bring your work: upload a notebook, script, or your entire codebase — or just add
                     {" "}
-                    <code className="rounded bg-white/10 px-1 py-0.5 text-fuchsia-300">import infiniflop; infiniflop.sendJob()</code>
+                    <code className="rounded bg-white/10 px-1 py-0.5 text-blue-300">import infiniflop; infiniflop.sendJob()</code>
                     {" "}
                     to run directly on Infiniflop GPUs.
                   </>
