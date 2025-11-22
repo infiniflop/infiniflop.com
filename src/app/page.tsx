@@ -4,195 +4,126 @@ import React from "react";
 import { motion } from "framer-motion";
 
 // ---------------------------------------------
-// Infiniflop Coming Soon (TSX)
-// Uses the exact theming primitives from your landing page
-// while keeping the page content IDENTICAL to the attached HTML.
+// Utils
 // ---------------------------------------------
-
-// Small design tokens (refined for professional look)
-const gradient =
-  "bg-[radial-gradient(1200px_800px_at_50%_-20%,rgb(59_130_246_/_0.12)_0%,transparent_70%)]";
-
-const glass =
-  "backdrop-blur-lg border border-white/[0.08] bg-white/[0.03] dark:bg-white/[0.03] shadow-[0_0_0_1px_rgba(255,255,255,0.03)_inset,0_8px_32px_-8px_rgba(0,0,0,0.3)]";
-
-const shineClass =
-  "relative overflow-hidden before:absolute before:inset-0 before:-translate-x-full before:bg-gradient-to-r before:from-transparent before:via-white/15 before:to-transparent hover:before:translate-x-full before:transition before:duration-[1400ms] before:ease-out";
-
-// Simple utility
 const cn = (...classes: (string | false | null | undefined)[]) =>
   classes.filter(Boolean).join(" ");
 
-// Floating orbs background (refined for subtle professional look)
-const FloatingOrbs: React.FC = () => {
-  const [isClient, setIsClient] = React.useState(false);
+// ---------------------------------------------
+// Components
+// ---------------------------------------------
 
-  const orbs = React.useMemo(
-    () =>
-      new Array(3).fill(0).map((_, i) => ({
-        id: i,
-        size: 200 + Math.round(Math.random() * 180),
-        top: `${Math.round(Math.random() * 80)}%`,
-        left: `${Math.round(Math.random() * 90)}%`,
-        delay: Math.random() * 2,
-      })),
-    []
-  );
-
-  React.useEffect(() => {
-    setIsClient(true);
-  }, []);
-
-  if (!isClient) {
-    return <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden" />;
-  }
-
-  return (
-    <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
-      {orbs.map((o) => (
-        <motion.div
-          key={o.id}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 0.25 }}
-          transition={{ duration: 1.5, delay: o.delay }}
-          className="absolute rounded-full blur-3xl"
-          style={{
-            width: o.size,
-            height: o.size,
-            top: o.top,
-            left: o.left,
-            background: "radial-gradient(circle at 30% 30%, rgba(59,130,246,0.25), transparent 65%)",
-          }}
-        />
-      ))}
-    </div>
-  );
-};
-
-// Fine noise overlay (from your theme)
-const Noise: React.FC = () => (
-  <div
-    className="pointer-events-none absolute inset-0 -z-10 opacity-[0.08]"
-    style={{
-      backgroundImage:
-        'url("data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"160\" height=\"160\" viewBox=\"0 0 160 160\"><filter id=\"n\"><feTurbulence baseFrequency=\"0.8\" numOctaves=\"3\"/></filter><rect width=\"100%\" height=\"100%\" filter=\"url(%23n)\" opacity=\"0.6\"/></svg>")',
-      backgroundSize: "auto",
-    }}
-  />
-);
-
-// Small helper for staggered fade-up
-const fadeUp = (i = 0) => ({
-  initial: { opacity: 0, y: 16 },
-  animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.5, delay: 0.15 * i, ease: [0.22, 1, 0.36, 1] as const },
-});
-
-// Subtle "active" bullet dot used in the 3 feature items (centered vertically)
-const BulletDot: React.FC = () => (
-  <motion.span
-    initial={{ scale: 1, opacity: 0.9 }}
-    animate={{ scale: [1, 1.04, 1], opacity: [0.9, 1, 0.9] }}
-    transition={{ duration: 2.8, repeat: Infinity, ease: "easeInOut" }}
-    className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 inline-flex h-3 w-3 items-center justify-center"
-  >
-    <span className="relative block h-2.5 w-2.5 rounded-full bg-blue-500 ring-1 ring-blue-400/30 shadow-[0_0_6px_rgba(59,130,246,0.35)]">
-      <span className="pointer-events-none absolute -inset-1 rounded-full bg-blue-400/8 blur-[4px]" aria-hidden="true" />
+const Badge = ({ children }: { children: React.ReactNode }) => (
+  <div className="inline-flex items-center rounded-full border border-blue-500/30 bg-blue-500/10 px-3 py-1 text-xs font-medium text-blue-300 backdrop-blur-md">
+    <span className="mr-2 flex h-2 w-2 relative">
+      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-blue-400 opacity-75"></span>
+      <span className="relative inline-flex h-2 w-2 rounded-full bg-blue-500"></span>
     </span>
-  </motion.span>
+    {children}
+  </div>
+);
+
+const BackgroundGrid = () => (
+  <div className="absolute inset-0 -z-10 overflow-hidden">
+    <div 
+      className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"
+      style={{ maskImage: "radial-gradient(ellipse 60% 50% at 50% 0%, #000 70%, transparent 100%)" }}
+    />
+    <div className="absolute left-0 right-0 top-0 -z-10 m-auto h-[310px] w-[310px] rounded-full bg-blue-500 opacity-20 blur-[100px]" />
+  </div>
+);
+
+const FeatureCard = ({ children, delay }: { children: React.ReactNode; delay: number }) => (
+  <motion.div
+    initial={{ opacity: 0, y: 20 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.5, delay, ease: "easeOut" }}
+    className="group relative overflow-hidden rounded-2xl border border-white/10 bg-white/5 p-6 transition-colors hover:border-blue-500/30 hover:bg-white/[0.07]"
+  >
+    <div className="absolute inset-0 -z-10 bg-gradient-to-br from-blue-500/10 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+    {children}
+  </motion.div>
+);
+
+const CodeSnippet = () => (
+  <code className="rounded-md border border-blue-500/20 bg-blue-950/30 px-1.5 py-0.5 font-mono text-blue-200">
+    import infiniflop; infiniflop.sendJob()
+  </code>
 );
 
 // ---------------------------------------------
-// PAGE — content is verbatim from the attached HTML
+// Page
 // ---------------------------------------------
-const ComingSoon: React.FC = () => {
+export default function ComingSoon() {
   return (
-    <div className={cn("min-h-screen overflow-x-hidden bg-[#0A0B0F] font-mono text-white", gradient)}>
-      <Noise />
-      <FloatingOrbs />
-
-      {/* Center block */}
-      <main className="relative mx-auto flex min-h-screen w-full max-w-5xl items-center justify-center px-4 sm:px-6">
-        <section className="w-full">
-          <motion.div
-            {...fadeUp(0)}
-            className={cn(
-              "mx-auto w-full max-w-3xl rounded-3xl p-6 sm:p-8 md:p-12 text-center",
-              glass,
-              shineClass
-            )}
-          >
-            {/* EXACT TEXT CONTENT START */}
-            <motion.h1
-              {...fadeUp(0.1)}
-              className="text-3xl sm:text-4xl md:text-6xl font-black tracking-[0.1em] text-white/95"
-            >
-              COMING SOON
-            </motion.h1>
-
-            <motion.h2
-              {...fadeUp(0.2)}
-              className="mt-3 text-2xl sm:text-3xl md:text-5xl font-extrabold bg-gradient-to-r from-blue-400 to-blue-500 bg-clip-text text-transparent relative inline-block"
-            >
+    <div className="relative flex min-h-screen flex-col items-center overflow-hidden bg-[#030305] font-sans text-white selection:bg-blue-500/30">
+      <BackgroundGrid />
+      
+      <main className="container relative mx-auto flex flex-1 flex-col items-center justify-center px-4 py-20 sm:px-6">
+        
+        {/* Header Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+          className="flex flex-col items-center text-center"
+        >
+          <Badge>COMING SOON</Badge>
+          
+          <h1 className="mt-8 text-5xl font-bold tracking-tight sm:text-7xl md:text-8xl">
+            <span className="block text-transparent bg-clip-text bg-gradient-to-b from-white via-white/90 to-white/70">
               INFINIFLOP
-              <span className="block mx-auto mt-2 h-[1.5px] w-4/5 sm:w-3/5 bg-blue-400/40" />
-            </motion.h2>
+            </span>
+          </h1>
+          
+          <p className="mt-6 max-w-2xl text-lg text-zinc-400 sm:text-xl">
+            Instant, scalable GPU power — via file upload or just <span className="text-white">two lines of code</span>.
+          </p>
+        </motion.div>
 
-            <motion.p
-              {...fadeUp(0.3)}
-              className="mx-auto mt-6 max-w-2xl text-sm sm:text-base md:text-lg text-white/85"
-            >
-              Instant, scalable GPU power – via file upload or two lines of code.
-            </motion.p>
+        {/* Features Grid */}
+        <div className="mt-16 grid w-full max-w-4xl gap-4 sm:grid-cols-3">
+          <FeatureCard delay={0.2}>
+            <div className="mb-4 inline-flex h-10 w-10 items-center justify-center rounded-lg bg-blue-500/10 text-blue-400">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+            </div>
+            <h3 className="mb-2 font-semibold text-white">Instant Scale</h3>
+            <p className="text-sm text-zinc-400 leading-relaxed">
+              Spin‑up serverless GPUs in seconds. No queues, no manual provisioning.
+            </p>
+          </FeatureCard>
 
-            {/* Feature list (3 items) */}
-            <motion.ul
-              {...fadeUp(0.4)}
-              className="mx-auto mt-8 sm:mt-10 grid max-w-2xl gap-3 sm:gap-4 text-left"
-            >
-              {[
-                "Spin‑up serverless GPUs in seconds – no queues, no extra manual work.",
-                (
-                  <>
-                    Bring your work: upload a notebook, script, or your entire codebase — or just add
-                    {" "}
-                    <code className="rounded bg-white/10 px-1 py-0.5 text-blue-300">import infiniflop; infiniflop.sendJob()</code>
-                    {" "}
-                    to run directly on Infiniflop GPUs.
-                  </>
-                ) as unknown as string,
-                "Pay only for what you use, billed per‑second.",
-              ].map((content, i) => (
-                <motion.li
-                  key={i}
-                  {...fadeUp(0.6 + i * 0.2)}
-                  className={cn(
-                    "relative rounded-2xl p-4 sm:p-5 md:p-6 leading-relaxed text-[0.97rem]",
-                    glass
-                  )}
-                >
-                  <BulletDot />
-                  <div className="pl-10 sm:pl-12">
-                    {typeof content === "string" ? content : content}
-                  </div>
-                </motion.li>
-              ))}
-            </motion.ul>
-            {/* EXACT TEXT CONTENT END */}
-          </motion.div>
+          <FeatureCard delay={0.3}>
+            <div className="mb-4 inline-flex h-10 w-10 items-center justify-center rounded-lg bg-blue-500/10 text-blue-400">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+            </div>
+            <h3 className="mb-2 font-semibold text-white">Zero Config</h3>
+            <p className="text-sm text-zinc-400 leading-relaxed">
+              Bring your notebook or codebase. Just add <br/><CodeSnippet />
+            </p>
+          </FeatureCard>
 
-          {/* Bottom footer (identical text; mobile-friendly positioning) */}
-          <motion.p
-            {...fadeUp(1.2)}
-            className="pointer-events-none static mt-6 text-center text-[11px] sm:text-xs text-white/60 sm:fixed sm:left-4 sm:bottom-4 sm:mt-0 sm:text-left"
-          >
-            © 2025 by Infiniflop Corporation
-          </motion.p>
-        </section>
+          <FeatureCard delay={0.4}>
+            <div className="mb-4 inline-flex h-10 w-10 items-center justify-center rounded-lg bg-blue-500/10 text-blue-400">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+            </div>
+            <h3 className="mb-2 font-semibold text-white">Per-Second Billing</h3>
+            <p className="text-sm text-zinc-400 leading-relaxed">
+              Pay only for the compute you actually use. No idle costs.
+            </p>
+          </FeatureCard>
+        </div>
+
+        {/* Footer */}
+        <motion.footer 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.8, duration: 1 }}
+          className="absolute bottom-6 text-center text-xs text-zinc-600"
+        >
+          © 2025 Infiniflop Corporation
+        </motion.footer>
       </main>
     </div>
   );
-};
-
-// Default export for Next.js
-export default ComingSoon;
+}
