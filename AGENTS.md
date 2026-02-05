@@ -18,3 +18,4 @@
 - Updated eslint-config-next to match Next.js
 - Adjusted .gitignore to keep pnpm lockfile tracked and allow AGENTS/CLAUDE
 - Updated pnpm-lock.yaml to include @vercel/analytics@1.6.1 for frozen-lockfile installs
+- Corrected @vercel/analytics integrity in pnpm-lock.yaml to match registry tarball
