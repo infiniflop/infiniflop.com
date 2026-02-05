@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@vercel/analytics':
+        specifier: ^1.6.1
+        version: 1.6.1
       framer-motion:
         specifier: ^12.23.12
         version: 12.23.12(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
@@ -699,6 +702,10 @@ packages:
     resolution: {integrity: sha512-lrW200hZdbfRtztbygyaq/6jP6AKE8qQN2KvPcJ+x7wiD038YtnYtZ82IMNJ69GJibV7bwL3y9FgK+5w/pYt6g==}
     cpu: [x64]
     os: [win32]
+
+  '@vercel/analytics@1.6.1':
+    resolution: {integrity: sha512-5gTVVu6a1Yq6uVM+EOOzHkQUQ5l3THn3O2q/xiAO9ekrk+WNft/3GYKEos8p8UwoMqBzPjJAL0ZKTHTUTEmnWQ==}
+    engines: {node: '>=14'}
 
   acorn-jsx@5.3.2:
     resolution: {integrity: sha512-rq9s+JNhf0IChjtDXxllJ7g41oZk5SlXtp0LHwyA5cejwn7vKmKp4pPri6YEePv2PU65sAsegbXtIinmDFDXgQ==}
@@ -2588,6 +2595,8 @@ snapshots:
 
   '@unrs/resolver-binding-win32-x64-msvc@1.11.1':
     optional: true
+
+  '@vercel/analytics@1.6.1': {}
 
   acorn-jsx@5.3.2(acorn@8.15.0):
     dependencies:
