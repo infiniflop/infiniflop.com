@@ -51,6 +51,37 @@ const CodeSnippet = () => (
   </code>
 );
 
+const SurveyCTA = () => (
+  <motion.div
+    initial={{ opacity: 0, y: 20 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.5, delay: 0.15, ease: "easeOut" }}
+    className="mt-10 flex flex-col items-center"
+  >
+    <a
+      href="https://survey.infiniflop.com"
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="Take a survey to help us build Infiniflop"
+      className="group relative inline-flex items-center gap-2 rounded-full border border-blue-500/30 bg-blue-500/10 px-6 py-3 text-sm font-medium text-blue-200 backdrop-blur-md transition-all duration-300 hover:border-blue-400/50 hover:bg-blue-500/20 hover:text-white hover:shadow-[0_0_30px_-5px_rgba(59,130,246,0.5)]"
+    >
+      <span className="absolute inset-0 -z-10 rounded-full bg-blue-500/10 blur-xl transition-all duration-300 group-hover:bg-blue-500/20 group-hover:blur-2xl" />
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4 text-blue-400">
+        <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
+        <rect x="8" y="2" width="8" height="4" rx="1" ry="1" />
+      </svg>
+      Help Us Build What You Need
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5">
+        <path d="M5 12h14" />
+        <path d="m12 5 7 7-7 7" />
+      </svg>
+    </a>
+    <p className="mt-3 text-xs text-zinc-500">
+      Take a 2-minute survey to shape our product
+    </p>
+  </motion.div>
+);
+
 // ---------------------------------------------
 // Page
 // ---------------------------------------------
@@ -80,6 +111,9 @@ export default function ComingSoon() {
             Instant, scalable GPU power — via file upload or just <span className="text-white">two lines of code</span>.
           </p>
         </motion.div>
+
+        {/* Survey CTA */}
+        <SurveyCTA />
 
         {/* Features Grid */}
         <div className="mt-16 grid w-full max-w-4xl gap-4 sm:grid-cols-3">
@@ -121,7 +155,7 @@ export default function ComingSoon() {
           transition={{ delay: 0.8, duration: 1 }}
           className="absolute bottom-6 text-center text-xs text-zinc-600"
         >
-          © 2025 Infiniflop Corporation
+          © {new Date().getFullYear()} Infiniflop Corporation
         </motion.footer>
       </main>
     </div>
