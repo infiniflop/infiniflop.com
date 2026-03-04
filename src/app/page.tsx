@@ -1,161 +1,406 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
 
-// ---------------------------------------------
-// Utils
-// ---------------------------------------------
-const cn = (...classes: (string | false | null | undefined)[]) =>
-  classes.filter(Boolean).join(" ");
+// ─── Constants ──────────────────────────────────────────
+const YELLOW = "#FFE600";
 
-// ---------------------------------------------
-// Components
-// ---------------------------------------------
-
-const Badge = ({ children }: { children: React.ReactNode }) => (
-  <div className="inline-flex items-center rounded-full border border-blue-500/30 bg-blue-500/10 px-3 py-1 text-xs font-medium text-blue-300 backdrop-blur-md">
-    <span className="mr-2 flex h-2 w-2 relative">
-      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-blue-400 opacity-75"></span>
-      <span className="relative inline-flex h-2 w-2 rounded-full bg-blue-500"></span>
-    </span>
-    {children}
-  </div>
-);
-
-const BackgroundGrid = () => (
-  <div className="absolute inset-0 -z-10 overflow-hidden">
-    <div 
-      className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"
-      style={{ maskImage: "radial-gradient(ellipse 60% 50% at 50% 0%, #000 70%, transparent 100%)" }}
+// ─── Circuit Board Background ───────────────────────────
+const CircuitBackground = () => (
+  <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
+    {/* Grid pattern */}
+    <div
+      className="absolute inset-0"
+      style={{
+        backgroundImage: `
+          linear-gradient(to right, ${YELLOW}09 1px, transparent 1px),
+          linear-gradient(to bottom, ${YELLOW}09 1px, transparent 1px)
+        `,
+        backgroundSize: "48px 48px",
+      }}
     />
-    <div className="absolute left-0 right-0 top-0 -z-10 m-auto h-[310px] w-[310px] rounded-full bg-blue-500 opacity-20 blur-[100px]" />
+
+    {/* Right-side circuit traces */}
+    <motion.svg
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 0.15 }}
+      transition={{ duration: 1.5, delay: 0.5 }}
+      className="absolute -right-10 top-[12%] hidden h-[450px] w-[450px] md:block"
+      viewBox="0 0 450 450"
+      fill="none"
+    >
+      <motion.path
+        d="M 0 120 H 220 L 260 80 H 430"
+        stroke={YELLOW}
+        strokeWidth="1"
+        initial={{ pathLength: 0 }}
+        animate={{ pathLength: 1 }}
+        transition={{ duration: 2, delay: 1, ease: "easeInOut" }}
+      />
+      <motion.path
+        d="M 220 120 V 240 H 400"
+        stroke={YELLOW}
+        strokeWidth="1"
+        initial={{ pathLength: 0 }}
+        animate={{ pathLength: 1 }}
+        transition={{ duration: 1.5, delay: 1.8, ease: "easeInOut" }}
+      />
+      <motion.path
+        d="M 80 300 H 220 V 200"
+        stroke={YELLOW}
+        strokeWidth="1"
+        initial={{ pathLength: 0 }}
+        animate={{ pathLength: 1 }}
+        transition={{ duration: 1.5, delay: 2.2, ease: "easeInOut" }}
+      />
+      <motion.circle
+        cx="220" cy="120" r="3" fill={YELLOW}
+        initial={{ scale: 0 }} animate={{ scale: 1 }}
+        transition={{ delay: 2, type: "spring" }}
+      />
+      <motion.circle
+        cx="220" cy="200" r="3" fill={YELLOW}
+        initial={{ scale: 0 }} animate={{ scale: 1 }}
+        transition={{ delay: 2.8, type: "spring" }}
+      />
+      <motion.circle
+        cx="400" cy="240" r="3" fill={YELLOW}
+        initial={{ scale: 0 }} animate={{ scale: 1 }}
+        transition={{ delay: 2.5, type: "spring" }}
+      />
+    </motion.svg>
+
+    {/* Bottom-left circuit traces */}
+    <motion.svg
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 0.12 }}
+      transition={{ duration: 1.5, delay: 1 }}
+      className="absolute -left-5 bottom-[8%] hidden h-[300px] w-[350px] md:block"
+      viewBox="0 0 350 300"
+      fill="none"
+    >
+      <motion.path
+        d="M 350 140 H 180 V 60 H 30"
+        stroke={YELLOW}
+        strokeWidth="1"
+        initial={{ pathLength: 0 }}
+        animate={{ pathLength: 1 }}
+        transition={{ duration: 2, delay: 1.5, ease: "easeInOut" }}
+      />
+      <motion.path
+        d="M 180 140 V 250 H 50"
+        stroke={YELLOW}
+        strokeWidth="1"
+        initial={{ pathLength: 0 }}
+        animate={{ pathLength: 1 }}
+        transition={{ duration: 1.5, delay: 2.2, ease: "easeInOut" }}
+      />
+      <motion.circle
+        cx="180" cy="140" r="3" fill={YELLOW}
+        initial={{ scale: 0 }} animate={{ scale: 1 }}
+        transition={{ delay: 2.8, type: "spring" }}
+      />
+    </motion.svg>
   </div>
 );
 
-const FeatureCard = ({ children, delay }: { children: React.ReactNode; delay: number }) => (
-  <motion.div
-    initial={{ opacity: 0, y: 20 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{ duration: 0.5, delay, ease: "easeOut" }}
-    className="group relative overflow-hidden rounded-2xl border border-white/10 bg-white/5 p-6 transition-colors hover:border-blue-500/30 hover:bg-white/[0.07]"
-  >
-    <div className="absolute inset-0 -z-10 bg-gradient-to-br from-blue-500/10 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-    {children}
-  </motion.div>
-);
+// ─── Typewriter Terminal Block ──────────────────────────
+const TERMINAL_LINES = [
+  { text: "import infiniflop;", isStatus: false },
+  { text: "infiniflop.sendJob();", isStatus: false },
+  { text: "STATUS: GPU CLUSTER ACTIVE", isStatus: true },
+];
 
-const CodeSnippet = () => (
-  <code className="rounded-md border border-blue-500/20 bg-blue-950/30 px-1.5 py-0.5 font-mono text-blue-200">
-    import infiniflop; infiniflop.sendJob()
-  </code>
-);
+const TerminalBlock = ({ onComplete }: { onComplete: () => void }) => {
+  const [lineIndex, setLineIndex] = useState(-1);
+  const [charIndex, setCharIndex] = useState(0);
+  const [phase, setPhase] = useState<"idle" | "typing" | "pausing" | "done">(
+    "idle",
+  );
 
-const SurveyCTA = () => (
+  // Start typing after initial delay
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setLineIndex(0);
+      setCharIndex(0);
+      setPhase("typing");
+    }, 700);
+    return () => clearTimeout(timer);
+  }, []);
+
+  // Typing engine
+  useEffect(() => {
+    if (phase === "typing" && lineIndex >= 0) {
+      const currentLine = TERMINAL_LINES[lineIndex];
+      if (charIndex < currentLine.text.length) {
+        const timer = setTimeout(
+          () => setCharIndex((c) => c + 1),
+          30,
+        );
+        return () => clearTimeout(timer);
+      }
+      // Line complete
+      if (lineIndex < TERMINAL_LINES.length - 1) {
+        setPhase("pausing");
+      } else {
+        setPhase("done");
+        onComplete();
+      }
+    } else if (phase === "pausing") {
+      // Longer pause before the status line
+      const pauseMs = lineIndex === 1 ? 450 : 200;
+      const timer = setTimeout(() => {
+        setLineIndex((i) => i + 1);
+        setCharIndex(0);
+        setPhase("typing");
+      }, pauseMs);
+      return () => clearTimeout(timer);
+    }
+  }, [phase, lineIndex, charIndex, onComplete]);
+
+  return (
+    <div className="mb-10 space-y-1.5 sm:space-y-2">
+      {TERMINAL_LINES.map((line, i) => {
+        if (i > lineIndex || lineIndex < 0) return null;
+
+        const displayText =
+          i === lineIndex ? line.text.slice(0, charIndex) : line.text;
+        const isActive = i === lineIndex && phase === "typing";
+        const isFinalLine = i === TERMINAL_LINES.length - 1;
+        const showCursor =
+          isActive || (isFinalLine && phase === "done");
+
+        return (
+          <React.Fragment key={i}>
+            {line.isStatus && <div className="h-1.5 sm:h-3" />}
+            <div className="flex items-center font-mono text-sm text-zinc-400 sm:text-base">
+              <span className="mr-2 select-none text-zinc-600">&gt;</span>
+              {line.isStatus ? (
+                <span className="uppercase tracking-wider">
+                  {displayText}
+                </span>
+              ) : (
+                <span>{displayText}</span>
+              )}
+              {showCursor && (
+                <motion.span
+                  animate={{ opacity: [1, 0] }}
+                  transition={{
+                    duration: 0.8,
+                    repeat: Infinity,
+                    repeatType: "reverse",
+                    ease: "linear",
+                  }}
+                  className="ml-0.5 inline-block h-4 w-[9px]"
+                  style={{ backgroundColor: YELLOW }}
+                />
+              )}
+            </div>
+          </React.Fragment>
+        );
+      })}
+    </div>
+  );
+};
+
+// ─── Feature Card ───────────────────────────────────────
+const FeatureCard = ({
+  icon,
+  title,
+  description,
+  delay,
+  visible,
+}: {
+  icon: React.ReactNode;
+  title: string;
+  description: string;
+  delay: number;
+  visible: boolean;
+}) => (
   <motion.div
-    initial={{ opacity: 0, y: 20 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{ duration: 0.5, delay: 0.15, ease: "easeOut" }}
-    className="mt-10 flex flex-col items-center"
+    initial={{ opacity: 0, y: 30 }}
+    animate={visible ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+    transition={{ duration: 0.5, delay: visible ? delay : 0, ease: "easeOut" }}
+    style={{ opacity: 0 }}
+    className="group relative border border-zinc-800 bg-zinc-950/60 p-6 backdrop-blur-sm transition-[border-color] duration-300 hover:border-zinc-600"
   >
-    <a
-      href="https://survey.infiniflop.com"
-      target="_blank"
-      rel="noopener noreferrer"
-      aria-label="Take a survey to help us build Infiniflop"
-      className="group relative inline-flex items-center gap-2 rounded-full border border-blue-500/30 bg-blue-500/10 px-6 py-3 text-sm font-medium text-blue-200 backdrop-blur-md transition-all duration-300 hover:border-blue-400/50 hover:bg-blue-500/20 hover:text-white hover:shadow-[0_0_30px_-5px_rgba(59,130,246,0.5)]"
+    <div
+      className="absolute bottom-0 left-0 h-[2px] w-0 transition-all duration-500 group-hover:w-full"
+      style={{ backgroundColor: YELLOW }}
+    />
+    <div className="mb-5 flex h-16 w-16 items-center justify-center border border-zinc-700 text-zinc-400 transition-all duration-300 group-hover:border-zinc-500 group-hover:text-white">
+      {icon}
+    </div>
+    <h3
+      className="mb-2 font-mono text-sm font-bold uppercase tracking-wider"
+      style={{ color: YELLOW }}
     >
-      <span className="absolute inset-0 -z-10 rounded-full bg-blue-500/10 blur-xl transition-all duration-300 group-hover:bg-blue-500/20 group-hover:blur-2xl" />
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4 text-blue-400">
-        <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
-        <rect x="8" y="2" width="8" height="4" rx="1" ry="1" />
-      </svg>
-      Help Us Build What You Need
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5">
-        <path d="M5 12h14" />
-        <path d="m12 5 7 7-7 7" />
-      </svg>
-    </a>
-    <p className="mt-3 text-xs text-zinc-500">
-      Take a 2-minute survey to shape our product
+      {title}
+    </h3>
+    <p className="font-mono text-xs uppercase leading-relaxed text-zinc-500">
+      {description}
     </p>
   </motion.div>
 );
 
-// ---------------------------------------------
-// Page
-// ---------------------------------------------
+// ─── Icons ──────────────────────────────────────────────
+const BoltIcon = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="1.5"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    className="h-8 w-8"
+  >
+    <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+  </svg>
+);
+
+const CodeIcon = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="1.5"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    className="h-8 w-8"
+  >
+    <polyline points="16 18 22 12 16 6" />
+    <polyline points="8 6 2 12 8 18" />
+  </svg>
+);
+
+const DollarIcon = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="1.5"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    className="h-8 w-8"
+  >
+    <line x1="12" y1="1" x2="12" y2="23" />
+    <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+  </svg>
+);
+
+// ─── Page ───────────────────────────────────────────────
 export default function ComingSoon() {
+  const [showContent, setShowContent] = useState(false);
+
+  const handleTerminalComplete = useCallback(() => {
+    setShowContent(true);
+  }, []);
+
   return (
-    <div className="relative flex min-h-screen flex-col items-center overflow-hidden bg-[#030305] font-sans text-white selection:bg-blue-500/30">
-      <BackgroundGrid />
-      
-      <main className="container relative mx-auto flex flex-1 flex-col items-center justify-center px-4 py-20 sm:px-6">
-        
-        {/* Header Section */}
+    <div className="relative flex min-h-screen flex-col overflow-hidden bg-[#0a0a0a] text-white selection:bg-yellow-500/20">
+      <CircuitBackground />
+
+      <main className="relative mx-auto flex w-full max-w-6xl flex-1 flex-col px-6 py-8 sm:px-10 sm:py-12">
+        {/* Coming Soon Badge */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: "easeOut" }}
-          className="flex flex-col items-center text-center"
+          transition={{ duration: 0.5, delay: 0.1 }}
+          className="mb-6 flex justify-center sm:mb-8"
         >
-          <Badge>COMING SOON</Badge>
-          
-          <h1 className="mt-8 text-5xl font-bold tracking-tight sm:text-7xl md:text-8xl">
-            <span className="block text-transparent bg-clip-text bg-gradient-to-b from-white via-white/90 to-white/70">
-              INFINIFLOP
-            </span>
-          </h1>
-          
-          <p className="mt-6 max-w-2xl text-lg text-zinc-400 sm:text-xl">
-            Instant, scalable GPU power — via file upload or just <span className="text-white">two lines of code</span>.
-          </p>
+          <span
+            className="border px-4 py-1.5 text-[10px] font-bold uppercase tracking-[0.25em] sm:text-xs"
+            style={{ borderColor: `${YELLOW}66`, color: YELLOW }}
+          >
+            Coming Soon
+          </span>
         </motion.div>
 
-        {/* Survey CTA */}
-        <SurveyCTA />
+        {/* INFINIFLOP Title */}
+        <motion.h1
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{
+            duration: 0.7,
+            delay: 0.2,
+            ease: [0.25, 0.46, 0.45, 0.94],
+          }}
+          className="mb-10 text-center font-display text-[3rem] leading-[0.9] tracking-tight sm:text-[6rem] md:text-[8rem] lg:text-[10rem]"
+          style={{
+            color: YELLOW,
+            textShadow: `0 0 80px ${YELLOW}1A, 0 0 160px ${YELLOW}0D`,
+          }}
+        >
+          INFINIFLOP
+        </motion.h1>
 
-        {/* Features Grid */}
-        <div className="mt-16 grid w-full max-w-4xl gap-4 sm:grid-cols-3">
-          <FeatureCard delay={0.2}>
-            <div className="mb-4 inline-flex h-10 w-10 items-center justify-center rounded-lg bg-blue-500/10 text-blue-400">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-            </div>
-            <h3 className="mb-2 font-semibold text-white">Instant Scale</h3>
-            <p className="text-sm text-zinc-400 leading-relaxed">
-              Spin‑up serverless GPUs in seconds. No queues, no manual provisioning.
-            </p>
-          </FeatureCard>
+        {/* Terminal Block with Typewriter */}
+        <TerminalBlock onComplete={handleTerminalComplete} />
 
-          <FeatureCard delay={0.3}>
-            <div className="mb-4 inline-flex h-10 w-10 items-center justify-center rounded-lg bg-blue-500/10 text-blue-400">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
-            </div>
-            <h3 className="mb-2 font-semibold text-white">Zero Config</h3>
-            <p className="text-sm text-zinc-400 leading-relaxed">
-              Bring your notebook or codebase. Just add <br/><CodeSnippet />
-            </p>
-          </FeatureCard>
+        {/* CTA Banner — waits for terminal to finish */}
+        <motion.a
+          href="https://survey.infiniflop.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          initial={{ opacity: 0, y: 20 }}
+          animate={
+            showContent ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }
+          }
+          transition={{ duration: 0.5, ease: "easeOut" }}
+          style={{ opacity: 0, backgroundColor: YELLOW }}
+          className="group mb-10 flex w-full items-center justify-center gap-3 py-4 text-sm font-bold uppercase tracking-wider text-black transition-shadow duration-150 sm:mb-14 sm:py-5 sm:text-xl md:text-2xl"
+          whileHover={{
+            boxShadow: `0 0 50px ${YELLOW}40`,
+          }}
+        >
+          Help Us Build What You Need
+          <span className="inline-block transition-transform duration-300 group-hover:translate-x-1.5">
+            &rarr;
+          </span>
+        </motion.a>
 
-          <FeatureCard delay={0.4}>
-            <div className="mb-4 inline-flex h-10 w-10 items-center justify-center rounded-lg bg-blue-500/10 text-blue-400">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-            </div>
-            <h3 className="mb-2 font-semibold text-white">Per-Second Billing</h3>
-            <p className="text-sm text-zinc-400 leading-relaxed">
-              Pay only for the compute you actually use. No idle costs.
-            </p>
-          </FeatureCard>
+        {/* Feature Cards — stagger after CTA */}
+        <div className="grid gap-4 sm:grid-cols-3">
+          <FeatureCard
+            delay={0.15}
+            visible={showContent}
+            icon={<BoltIcon />}
+            title="Instant Scale."
+            description="Spin-up serverless GPUs. No queues. No provisioning."
+          />
+          <FeatureCard
+            delay={0.25}
+            visible={showContent}
+            icon={<CodeIcon />}
+            title="Zero Config."
+            description="Bring notebook or codebase. Just two lines."
+          />
+          <FeatureCard
+            delay={0.35}
+            visible={showContent}
+            icon={<DollarIcon />}
+            title="Per-Second Billing."
+            description="Pay for compute. No idle costs."
+          />
         </div>
 
+        {/* Spacer */}
+        <div className="flex-1" />
+
         {/* Footer */}
-        <motion.footer 
+        <motion.footer
           initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.8, duration: 1 }}
-          className="absolute bottom-6 text-center text-xs text-zinc-600"
+          animate={showContent ? { opacity: 1 } : { opacity: 0 }}
+          transition={{ delay: showContent ? 0.5 : 0, duration: 1 }}
+          style={{ opacity: 0 }}
+          className="mt-10 pb-3.5 text-center font-mono text-[9px] uppercase tracking-[0.15em] text-zinc-600 sm:mt-14 sm:text-[11px]"
         >
-          © {new Date().getFullYear()} Infiniflop Corporation
+          &copy; {new Date().getFullYear()} Infiniflop Corporation // Built by
+          Engineers for Engineers
         </motion.footer>
       </main>
     </div>
