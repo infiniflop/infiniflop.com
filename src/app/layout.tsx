@@ -20,8 +20,8 @@ const anton = Anton({
 });
 
 export const metadata: Metadata = {
-  title: "Coming Soon - Infiniflop",
-  description: "Instant, scalable GPU power – via file upload or two lines of code.",
+  title: "Docksmith — Coming Soon",
+  description: "AI-powered app review. Deep insights. Zero guesswork. Coming soon from Infiniflop Labs.",
 };
 
 export default function RootLayout({

@@ -107,9 +107,9 @@ const CircuitBackground = () => (
 
 // ─── Typewriter Terminal Block ──────────────────────────
 const TERMINAL_LINES = [
-  { text: "import infiniflop;", isStatus: false },
-  { text: "infiniflop.sendJob();", isStatus: false },
-  { text: "STATUS: GPU CLUSTER ACTIVE", isStatus: true },
+  { text: "docksmith", isStatus: false },
+  { text: "uploading codebase \u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588 done", isStatus: false },
+  { text: "review complete. 14 findings. 3 critical.", isStatus: true },
 ];
 
 const TerminalBlock = ({ onComplete }: { onComplete: () => void }) => {
@@ -140,12 +140,16 @@ const TerminalBlock = ({ onComplete }: { onComplete: () => void }) => {
         );
         return () => clearTimeout(timer);
       }
-      // Line complete
+      // Line complete — use a zero-delay timeout to avoid synchronous setState in effect
       if (lineIndex < TERMINAL_LINES.length - 1) {
-        setPhase("pausing");
+        const timer = setTimeout(() => setPhase("pausing"), 0);
+        return () => clearTimeout(timer);
       } else {
-        setPhase("done");
-        onComplete();
+        const timer = setTimeout(() => {
+          setPhase("done");
+          onComplete();
+        }, 0);
+        return () => clearTimeout(timer);
       }
     } else if (phase === "pausing") {
       // Longer pause before the status line
@@ -204,6 +208,130 @@ const TerminalBlock = ({ onComplete }: { onComplete: () => void }) => {
   );
 };
 
+// ─── Waitlist Form ──────────────────────────────────────
+const WaitlistForm = ({ visible }: { visible: boolean }) => {
+  const [email, setEmail] = useState("");
+  const [status, setStatus] = useState<
+    "idle" | "loading" | "success" | "already" | "error" | "invalid"
+  >("idle");
+
+  const validate = (value: string) =>
+    value.includes("@") && value.includes(".");
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!validate(email)) {
+      setStatus("invalid");
+      return;
+    }
+
+    setStatus("loading");
+
+    try {
+      const res = await fetch("/api/waitlist", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        setStatus(data.message === "already_registered" ? "already" : "success");
+      } else {
+        setStatus("error");
+      }
+    } catch {
+      setStatus("error");
+    }
+  };
+
+  if (status === "success" || status === "already") {
+    return (
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5 }}
+        className="mb-10 py-4 text-center font-mono text-sm font-bold uppercase tracking-wider sm:mb-14 sm:py-5 sm:text-xl"
+        style={{ color: YELLOW }}
+      >
+        {status === "already"
+          ? "You\u2019re already in. We\u2019ll be in touch."
+          : "You\u2019re in. We\u2019ll be in touch."}
+      </motion.div>
+    );
+  }
+
+  return (
+    <motion.form
+      onSubmit={handleSubmit}
+      initial={{ opacity: 0, y: 20 }}
+      animate={visible ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+      transition={{ duration: 0.5, ease: "easeOut" }}
+      style={{ opacity: 0 }}
+      className="mb-10 sm:mb-14"
+    >
+      <div className="flex flex-col gap-3 sm:flex-row sm:gap-0">
+        <input
+          type="email"
+          value={email}
+          onChange={(e) => {
+            setEmail(e.target.value);
+            if (status === "invalid" || status === "error") setStatus("idle");
+          }}
+          placeholder="enter your email"
+          className="w-full border border-zinc-700 bg-zinc-900 px-4 py-4 font-mono text-sm uppercase tracking-wider text-zinc-300 placeholder-zinc-500 transition-all duration-200 focus:outline-none sm:py-5 sm:text-base"
+          style={{
+            // Focus styles applied via onFocus/onBlur for the yellow glow
+          }}
+          onFocus={(e) => {
+            e.currentTarget.style.borderColor = YELLOW;
+            e.currentTarget.style.boxShadow = `0 0 20px ${YELLOW}20`;
+          }}
+          onBlur={(e) => {
+            e.currentTarget.style.borderColor = "";
+            e.currentTarget.style.boxShadow = "";
+          }}
+        />
+        <button
+          type="submit"
+          disabled={status === "loading"}
+          className="group flex items-center justify-center gap-2 whitespace-nowrap px-6 py-4 text-sm font-bold uppercase tracking-wider text-black transition-shadow duration-150 sm:py-5 sm:text-base"
+          style={{
+            backgroundColor: YELLOW,
+            opacity: status === "loading" ? 0.7 : 1,
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.boxShadow = `0 0 50px ${YELLOW}40`;
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.boxShadow = "";
+          }}
+        >
+          {status === "loading" ? "Submitting..." : (
+            <>
+              Get Early Access
+              <span className="inline-block transition-transform duration-300 group-hover:translate-x-1.5">
+                &rarr;
+              </span>
+            </>
+          )}
+        </button>
+      </div>
+      {status === "invalid" && (
+        <p className="mt-2 font-mono text-xs uppercase tracking-wider text-red-400">
+          Enter a valid email.
+        </p>
+      )}
+      {status === "error" && (
+        <p className="mt-2 font-mono text-xs uppercase tracking-wider text-red-400">
+          Something went wrong. Try again.
+        </p>
+      )}
+    </motion.form>
+  );
+};
+
 // ─── Feature Card ───────────────────────────────────────
 const FeatureCard = ({
   icon,
@@ -245,7 +373,7 @@ const FeatureCard = ({
 );
 
 // ─── Icons ──────────────────────────────────────────────
-const BoltIcon = () => (
+const ShieldSearchIcon = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 24 24"
@@ -256,11 +384,13 @@ const BoltIcon = () => (
     strokeLinejoin="round"
     className="h-8 w-8"
   >
-    <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+    <path d="M12 2L3 7v5c0 5.25 3.75 10.15 9 11.4 5.25-1.25 9-6.15 9-11.4V7l-9-5z" />
+    <circle cx="12" cy="12" r="3" />
+    <line x1="14.1" y1="14.1" x2="17" y2="17" />
   </svg>
 );
 
-const CodeIcon = () => (
+const RocketIcon = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 24 24"
@@ -271,12 +401,14 @@ const CodeIcon = () => (
     strokeLinejoin="round"
     className="h-8 w-8"
   >
-    <polyline points="16 18 22 12 16 6" />
-    <polyline points="8 6 2 12 8 18" />
+    <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 00-2.91-.09z" />
+    <path d="M12 15l-3-3a22 22 0 012-3.95A12.88 12.88 0 0122 2c0 2.72-.78 7.5-6 11.95A22 22 0 0112 15z" />
+    <path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0" />
+    <path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5" />
   </svg>
 );
 
-const DollarIcon = () => (
+const PlugIcon = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 24 24"
@@ -287,8 +419,10 @@ const DollarIcon = () => (
     strokeLinejoin="round"
     className="h-8 w-8"
   >
-    <line x1="12" y1="1" x2="12" y2="23" />
-    <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+    <path d="M12 22v-5" />
+    <path d="M9 8V2" />
+    <path d="M15 8V2" />
+    <path d="M18 8v4a6 6 0 01-12 0V8z" />
   </svg>
 );
 
@@ -320,7 +454,7 @@ export default function ComingSoon() {
           </span>
         </motion.div>
 
-        {/* INFINIFLOP Title */}
+        {/* DOCKSMITH Title */}
         <motion.h1
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -329,62 +463,53 @@ export default function ComingSoon() {
             delay: 0.2,
             ease: [0.25, 0.46, 0.45, 0.94],
           }}
-          className="mb-10 text-center font-display text-[3rem] leading-[0.9] tracking-tight sm:text-[6rem] md:text-[8rem] lg:text-[10rem]"
+          className="mb-2 text-center font-display text-[3rem] leading-[0.9] tracking-tight sm:text-[6rem] md:text-[8rem] lg:text-[10rem]"
           style={{
             color: YELLOW,
             textShadow: `0 0 80px ${YELLOW}1A, 0 0 160px ${YELLOW}0D`,
           }}
         >
-          INFINIFLOP
+          DOCKSMITH
         </motion.h1>
+
+        {/* by Infiniflop Labs subtitle */}
+        <motion.p
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.5 }}
+          className="mb-10 text-center font-mono text-xs uppercase tracking-[0.3em] text-zinc-500"
+        >
+          by Infiniflop Labs
+        </motion.p>
 
         {/* Terminal Block with Typewriter */}
         <TerminalBlock onComplete={handleTerminalComplete} />
 
-        {/* CTA Banner — waits for terminal to finish */}
-        <motion.a
-          href="https://survey.infiniflop.com"
-          target="_blank"
-          rel="noopener noreferrer"
-          initial={{ opacity: 0, y: 20 }}
-          animate={
-            showContent ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }
-          }
-          transition={{ duration: 0.5, ease: "easeOut" }}
-          style={{ opacity: 0, backgroundColor: YELLOW }}
-          className="group mb-10 flex w-full items-center justify-center gap-3 py-4 text-sm font-bold uppercase tracking-wider text-black transition-shadow duration-150 sm:mb-14 sm:py-5 sm:text-xl md:text-2xl"
-          whileHover={{
-            boxShadow: `0 0 50px ${YELLOW}40`,
-          }}
-        >
-          Help Us Build What You Need
-          <span className="inline-block transition-transform duration-300 group-hover:translate-x-1.5">
-            &rarr;
-          </span>
-        </motion.a>
+        {/* Waitlist Form — waits for terminal to finish */}
+        <WaitlistForm visible={showContent} />
 
         {/* Feature Cards — stagger after CTA */}
         <div className="grid gap-4 sm:grid-cols-3">
           <FeatureCard
             delay={0.15}
             visible={showContent}
-            icon={<BoltIcon />}
-            title="Instant Scale."
-            description="Spin-up serverless GPUs. No queues. No provisioning."
+            icon={<ShieldSearchIcon />}
+            title="Deep Review."
+            description="AI that goes beyond surface-level. Finds what others miss."
           />
           <FeatureCard
             delay={0.25}
             visible={showContent}
-            icon={<CodeIcon />}
-            title="Zero Config."
-            description="Bring notebook or codebase. Just two lines."
+            icon={<RocketIcon />}
+            title="Ship Faster."
+            description="Catch issues before your users do. Accelerate with confidence."
           />
           <FeatureCard
             delay={0.35}
             visible={showContent}
-            icon={<DollarIcon />}
-            title="Per-Second Billing."
-            description="Pay for compute. No idle costs."
+            icon={<PlugIcon />}
+            title="Plug & Play."
+            description="Point it at your project. Get results. No setup headaches."
           />
         </div>
 
@@ -399,7 +524,7 @@ export default function ComingSoon() {
           style={{ opacity: 0 }}
           className="mt-10 pb-3.5 text-center font-mono text-[9px] uppercase tracking-[0.15em] text-zinc-600 sm:mt-14 sm:text-[11px]"
         >
-          &copy; {new Date().getFullYear()} Infiniflop Corporation // Built by
+          &copy; {new Date().getFullYear()} Infiniflop Labs // Built by
           Engineers for Engineers
         </motion.footer>
       </main>
