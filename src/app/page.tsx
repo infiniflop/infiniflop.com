@@ -522,10 +522,27 @@ export default function ComingSoon() {
           animate={showContent ? { opacity: 1 } : { opacity: 0 }}
           transition={{ delay: showContent ? 0.5 : 0, duration: 1 }}
           style={{ opacity: 0 }}
-          className="mt-10 pb-3.5 text-center font-mono text-[9px] uppercase tracking-[0.15em] text-zinc-600 sm:mt-14 sm:text-[11px]"
+          className="mt-10 flex flex-col items-center gap-4 pb-3.5 sm:mt-14"
         >
-          &copy; {new Date().getFullYear()} Infiniflop Labs // Built by
-          Engineers for Engineers
+          <a
+            href="https://x.com/infiniflop"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group flex h-9 w-9 items-center justify-center border border-zinc-700 text-zinc-500 transition-all duration-300 hover:border-zinc-400 hover:text-white"
+            aria-label="Follow @infiniflop on X"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              className="h-4 w-4 transition-transform duration-300 group-hover:scale-110"
+            >
+              <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+            </svg>
+          </a>
+          <span className="font-mono text-[9px] uppercase tracking-[0.15em] text-zinc-600 sm:text-[11px]">
+            &copy; {new Date().getFullYear()} Infiniflop Labs // Built by
+            Engineers for Engineers
+          </span>
         </motion.footer>
       </main>
     </div>
