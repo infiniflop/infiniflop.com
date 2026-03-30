@@ -216,7 +216,7 @@ const WaitlistForm = ({ visible }: { visible: boolean }) => {
   >("idle");
 
   const validate = (value: string) =>
-    value.includes("@") && value.includes(".");
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

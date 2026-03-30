@@ -19,14 +19,9 @@ export async function POST(request: Request) {
     const body = await request.json();
     const email: string = body.email ?? "";
 
-    // Basic server-side validation
-    if (
-      !email ||
-      email.length <= 5 ||
-      email.length >= 255 ||
-      !email.includes("@") ||
-      !email.includes(".")
-    ) {
+    // Server-side email format validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!email || email.length > 254 || !emailRegex.test(email)) {
       return Response.json(
         { success: false, error: "invalid_email" },
         { status: 400 },
