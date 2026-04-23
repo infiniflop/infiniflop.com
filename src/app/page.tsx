@@ -107,7 +107,7 @@ const CircuitBackground = () => (
 
 // ─── Typewriter Terminal Block ──────────────────────────
 const TERMINAL_LINES = [
-  { text: "docksmith", isStatus: false },
+  { text: "infiniview", isStatus: false },
   { text: "uploading codebase \u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588 done", isStatus: false },
   { text: "review complete. 14 findings. 3 critical.", isStatus: true },
 ];
@@ -454,7 +454,7 @@ export default function ComingSoon() {
           </span>
         </motion.div>
 
-        {/* DOCKSMITH Title */}
+        {/* INFINIVIEW Title */}
         <motion.h1
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -469,7 +469,7 @@ export default function ComingSoon() {
             textShadow: `0 0 80px ${YELLOW}1A, 0 0 160px ${YELLOW}0D`,
           }}
         >
-          DOCKSMITH
+          INFINIVIEW
         </motion.h1>
 
         {/* by Infiniflop Labs subtitle */}

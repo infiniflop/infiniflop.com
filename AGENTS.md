@@ -1,7 +1,7 @@
 # Infiniflop.com Agent Notes
 
 ## Project Overview
-- Next.js app using the App Router (coming soon page for Docksmith by Infiniflop Labs)
+- Next.js app using the App Router (coming soon page for Infiniview by Infiniflop Labs)
 - Package manager: pnpm
 
 ## Tooling

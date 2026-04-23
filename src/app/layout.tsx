@@ -20,7 +20,7 @@ const anton = Anton({
 });
 
 export const metadata: Metadata = {
-  title: "Docksmith — Coming Soon",
+  title: "Infiniview — Coming Soon",
   description: "AI-powered app review. Deep insights. Zero guesswork. Coming soon from Infiniflop Labs.",
 };
 
