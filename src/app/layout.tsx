@@ -1,27 +1,21 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Anton } from "next/font/google";
+import { Inter_Tight, JetBrains_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const interTight = Inter_Tight({
+  variable: "--font-inter-tight",
   subsets: ["latin"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const jetbrainsMono = JetBrains_Mono({
+  variable: "--font-jetbrains",
   subsets: ["latin"],
-});
-
-const anton = Anton({
-  weight: "400",
-  subsets: ["latin"],
-  variable: "--font-anton",
 });
 
 export const metadata: Metadata = {
-  title: "Infiniview — Coming Soon",
-  description: "AI-powered app review. Deep insights. Zero guesswork. Coming soon from Infiniflop Labs.",
+  title: "Infiniflop Labs",
+  description: "We build developer tools. Check out Infiniview — AI-powered code review and security testing.",
 };
 
 export default function RootLayout({
@@ -31,9 +25,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} ${anton.variable} antialiased`}
-      >
+      <body className={`${interTight.variable} ${jetbrainsMono.variable} antialiased`}>
         {children}
         <Analytics />
       </body>
