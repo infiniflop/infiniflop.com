@@ -1,8 +1,12 @@
 import Link from "next/link";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 export default function Home() {
   return (
     <div className="flex min-h-svh flex-col">
+      <div className="fixed top-4 right-4 z-50">
+        <ThemeToggle />
+      </div>
       <main className="flex flex-1 flex-col items-center justify-center px-5 sm:px-6 text-center">
         <div className="flex items-center gap-3 mb-8 sm:mb-10">
           <div className="relative h-[28px] w-[28px] bg-lime">

@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:is(.dark *));
+
 @theme {
   --font-sans: var(--font-inter-tight), 'Inter Tight', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-mono: var(--font-jetbrains), 'JetBrains Mono', ui-monospace, monospace;
@@ -13,6 +15,30 @@
   --color-text-muted: #727682;
   --color-lime: #d2fb5a;
   --color-lime-glow: rgba(210, 251, 90, 0.15);
+}
+
+:root {
+  color-scheme: dark;
+}
+
+.light {
+  --color-bg: #fafaf6;
+  --color-bg-elevated: #f2f2ec;
+  --color-border: #e0e0d3;
+  --color-border-accent: #c8c8b6;
+  --color-text: #0c0d11;
+  --color-text-secondary: #4d5159;
+  --color-text-muted: #7d818b;
+
+  color-scheme: light;
+}
+
+.light .text-lime { color: #5e7c0f; }
+.light .hover\:text-lime:hover { color: #5e7c0f; }
+
+.light ::selection {
+  background: var(--color-lime);
+  color: #07080b;
 }
 
 html {
