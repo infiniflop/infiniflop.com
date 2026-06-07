@@ -27,7 +27,7 @@ export default function Home() {
         </h1>
 
         <p className="mt-5 sm:mt-6 text-text-secondary text-base sm:text-lg leading-relaxed max-w-[480px]">
-          AI-powered code review and security testing. Agents that scan, attack, and stress-test your code in cloud sandboxes.
+          AI-powered code review and security testing. Agents that review, probe, and stress-test your code in cloud sandboxes.
         </p>
 
         <Link
