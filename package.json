@@ -20,7 +20,10 @@
       "@tailwindcss/oxide",
       "sharp",
       "unrs-resolver"
-    ]
+    ],
+    "overrides": {
+      "zod": "^4.6.6"
+    }
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.7",
