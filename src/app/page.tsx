@@ -1,5 +1,9 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { pageMetadata } from "@/lib/site";
+
+export const metadata: Metadata = pageMetadata({ path: "/" });
 
 export default function Home() {
   return (
