@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter_Tight, JetBrains_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import {
@@ -6,6 +6,7 @@ import {
   SITE_LOCALE,
   SITE_NAME,
   SITE_URL,
+  THEME_COLOR,
   TWITTER_SITE,
 } from "@/lib/site";
 import "./globals.css";
@@ -42,10 +43,16 @@ export const metadata: Metadata = {
   },
 };
 
-export const viewport = {
+// theme-color follows the OS colour scheme, which is also the site's default
+// theme before a visitor picks one with the toggle.
+export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  viewportFit: "cover" as const,
+  viewportFit: "cover",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: THEME_COLOR.light },
+    { media: "(prefers-color-scheme: dark)", color: THEME_COLOR.dark },
+  ],
 };
 
 const themeInitScript = `(function(){try{var s=localStorage.getItem('theme');var t=s==='light'||s==='dark'?s:(window.matchMedia('(prefers-color-scheme: light)').matches?'light':'dark');if(t==='light')document.documentElement.classList.add('light');}catch(e){}})();`;

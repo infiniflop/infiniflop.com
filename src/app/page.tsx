@@ -1,13 +1,16 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { JsonLd } from "@/components/json-ld";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { pageMetadata } from "@/lib/site";
+import { homeStructuredData } from "@/lib/structured-data";
 
 export const metadata: Metadata = pageMetadata({ path: "/" });
 
 export default function Home() {
   return (
     <div className="flex min-h-svh flex-col">
+      <JsonLd data={homeStructuredData} />
       <div className="fixed top-4 right-4 z-50">
         <ThemeToggle />
       </div>
