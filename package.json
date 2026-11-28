@@ -2,7 +2,7 @@
   "name": "infiniflop.com",
   "version": "0.1.0",
   "private": true,
-  "packageManager": "pnpm@10.34.9",
+  "packageManager": "pnpm@11.29.0",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -14,16 +14,6 @@
     "next": "16.4.5",
     "react": "19.2.8",
     "react-dom": "19.2.8"
-  },
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "@tailwindcss/oxide",
-      "sharp",
-      "unrs-resolver"
-    ],
-    "overrides": {
-      "zod": "^4.6.6"
-    }
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.7",
